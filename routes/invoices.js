@@ -1,5 +1,5 @@
 const express = require("express");
-const ExpressError = requrire("../expressError");
+const ExpressError = require("../expressError");
 const db = require("../db")
 
 let router = new express.Router();
@@ -27,7 +27,7 @@ router.get("/:id", async (req, res, next) => {
             [id]
             );
 
-        if(result.rows.length ===0){
+        if(result.rows.length === 0){
              throw new ExpressError(`No invoice with id ${id}`, 404);
         }
 
@@ -76,13 +76,13 @@ router.put("/:id", async (req, res, next)=> {
         let paidDate =null;
 
         let currentResult = await db.query(
-            `SELECR paid FROM invoices WHERE id = $1`,
+            `SELECT paid FROM invoices WHERE id = $1`,
             [id]
         );
 
-        if(result.rows.length ===0){
+        if(currentResult.rows.length == 0){
             throw new ExpressError(`No invoice with id ${id}`, 404);
-       }
+        }
 
        let currentPaidDate = currentResult.rows[0].paid_date;
 
@@ -113,10 +113,9 @@ router.delete("/:id", async (req, res, next) => {
         let result = await db.query(
             `DELETE FROM invoices WHERE id = $1 RETURNING id`,
             [id]
-        );
-
-        if (result.rows.length == 0) {
-            throw new ExpressError(`No invoice with id ${IdleDeadline}`, 404)
+        )
+        if (result.rows.length === 0) {
+            throw new ExpressError(`No invoice with id ${id}`, 404)
           }
         else{
             return res.json({"status": "DELETED"})

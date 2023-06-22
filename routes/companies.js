@@ -1,7 +1,7 @@
 const express = require("express");
-const ExpressError = requrire("../expressError");
 const db = require("../db")
 const slugify = require("slugify");
+const ExpressError = require("../expressError");
 
 let router = new express.Router();
 
@@ -33,7 +33,7 @@ router.get("/:code", async (req, res, next) => {
             [code]
             );
 
-        if(companyResult.rows.length ===0){
+        if(companyResult.rows.length == 0){
              throw new ExpressError(`No company with code ${code}`, 404);
         }
 
@@ -61,7 +61,7 @@ router.post("/", async (req, res, next)=> {
             RETURNING code, name, description`,
             [code, name, description]
         );
-        return res.status(201).json({"comapny": result.rows[0]})
+        return res.status(201).json({"company": result.rows[0]})
     }
     catch(e){
         return next(e);
@@ -75,7 +75,7 @@ router.put("/:code", async (req, res, next) => {
         let code = req.params.code;
 
         let result = await db.query(
-            `UPDATE companies SET name =$2, description = $3, WHERE code = $1
+            `UPDATE companies SET name =$2, description = $3 WHERE code = $1
             RETURNING code, name, description`,
             [code, name, description]
         );
@@ -101,7 +101,7 @@ router.delete("/:code", async (req, res, next) => {
             [code]
         );
 
-        if (result.rows.length == 0) {
+        if (result.rows.length === 0) {
             throw new ExpressError(`No company with code ${code}`, 404)
           }
         else{
